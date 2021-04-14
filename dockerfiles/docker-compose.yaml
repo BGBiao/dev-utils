@@ -1,0 +1,48 @@
+version: '3.6'
+services:
+  web:
+    build:
+      dockerfile: Dockerfile
+      context: nginx 
+    container_name: nginx-n9e
+    hostname: nginx-n9e
+    ports:
+      - 80:80
+    restart: unless-stopped
+    links:
+      - n9e:n9e
+
+  mysql:
+    image: mysql:5.6
+    container_name: mysql
+    hostname: mysql
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: SuperGoOps888
+    # volumes: 
+      # - /usr/local/docker/mysql/data:/var/lib/mysql
+
+  redis:
+    image: redis
+    container_name: redis
+    hostname: redis
+    ports:
+      - 6379:6379
+
+  api:
+    build:
+      dockerfile: Dockerfile
+      context: api
+    container_name: api
+    hostname: n9e
+    ports:
+      - 8000:8000
+    links:
+      - mysql:mysql
+      - redis:redis
+    depends_on:
+      - mysql
+      - redis
+
+
